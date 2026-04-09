@@ -1,49 +1,65 @@
-#ifndef __LISTA_SIMPLE_H__
-#define __LISTA_SIMPLE_H__
+#ifndef __NOTY_LISTA_PRACTICA_H__
 
-#include <stddef.h>
+	#define __NOTY_LISTA_PRACTICA_H__
 
-typedef struct Nodo {
-    void* dato;
-    struct Nodo* siguiente;
-} Nodo;
+	#include <stddef.h>
+	#include <stdbool.h>
 
-typedef struct {
-    Nodo* head;
-    Nodo* tail;
-} Lista;
+	typedef struct Node {
+		void*	data;
+		size_t	data_size;
 
-// Callbacks
-typedef int (*CompararFunc)(void*, void*);
-typedef void (*ImprimirFunc)(void*);
+		struct Node* next;
+		struct Node* last;
+	}Node;
 
-// Crear / estado
-Lista* crearLista();
-int esVacia(Lista* lista);
+	typedef struct {
+		Node* head;
+		Node* tail;
 
-// Inserciones
-void insertarInicio(Lista* lista, void* dato, size_t size);
-void insertarFinal(Lista* lista, void* dato, size_t size);
+		size_t length;
+	}List;
 
-// Eliminaciones
-void eliminarPorPosicion(Lista* lista, int pos);
-void eliminarPorElemento(Lista* lista, void* dato, CompararFunc cmp);
 
-// Búsquedas
-void* buscarPorPosicion(Lista* lista, int pos);
-int buscarPorElemento(Lista* lista, void* dato, CompararFunc cmp);
+	// Nodos
+	Node* newNode(void* data, size_t size);
+	void deleteNode(Node* n);
+	bool modifyNode(Node* n, void* data, size_t size);
 
-// Navegación
-Nodo* primero(Lista* lista);
-Nodo* ultimo(Lista* lista);
-Nodo* siguiente(Nodo* actual);
 
-// Modificar
-void modificar(Lista* lista, int pos, void* dato, size_t size);
+	// Crear / estado
+	List* newList();
+	void deleteList(List* l);
+	
+	static inline bool listIsEmpty(List* l) {
+		return l->length == 0;
+	}
 
-// Utilidad
-void imprimirLista(Lista* lista, ImprimirFunc imprimir);
-void vaciarLista(Lista* lista);
-void borrarLista(Lista* lista);
+
+	// Inserciones
+	bool listAdd(List* l, void* data, size_t size, int index);
+	bool listAddFirst(List* l, void* data, size_t size);
+	bool listAddLast(List* l, void* data, size_t size);
+
+
+	// Eliminaciones
+	bool listRemove(List* l, int index);
+	bool listRemoveFirst(List* l);
+	bool listRemoveLast(List* l);
+	bool listRemoveElement(List* l, void* data, bool (*cmpFunc)(void*, void*));
+
+
+	// Búsquedas
+	void* listGet(List* l, int index);
+	int listSearch(List* l, void* data, bool (*cmpFunc)(void*, void*));
+
+
+	// Modificar
+	void listModifyElement(List* l, int index, void* dato, size_t size);
+
+
+	// Utilidad
+	void listPrint(List* l, void (*printFunc)(void*));
+	void listEmpty(List* l);
 
 #endif
