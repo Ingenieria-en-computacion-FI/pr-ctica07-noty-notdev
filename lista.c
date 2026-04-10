@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lista_simple.h"
+#include "lista.h"
 
 #define invalidAddIndex(i, n)	( i < 0 || i >  n )
 #define invalidIndex(i, n)	( i < 0 || i >= n )
@@ -138,6 +138,28 @@ bool listAddLast(List* l, void* data, size_t size) {
 	return listAdd(l, data, size, l->length);
 }
 
+int listSearch(List* l, void* data, bool (*cmpFunc)(void*, void*)) {
+	int i = -1, cont = 0;
+
+	//	Buscarlo
+	Node* tmp = l->head;
+	while((tmp = tmp->next) != l->tail) {
+		if(cmpFunc(data, tmp->data)) {
+			i = cont;
+			break;
+		}
+
+		cont++;
+	}
+
+	return i;
+}
+
+// Modificar
+void listModifyElement(List* l, int index, void* dato, size_t size) {
+	modifyNode(nodeGet(l, index), dato, size);
+}
+
 
 // Eliminaciones
 bool listRemove(List* l, int index) {
@@ -164,9 +186,10 @@ bool listRemoveLast(List* l) {
 }
 
 bool listRemoveElement(List* l, void* data, bool (*cmpFunc)(void*, void*)) {
-	if(!listIsEmpty(l))			return false;
+	int i;
+	if(!listIsEmpty(l) || (i = listSearch(l, data, cmpFunc)) == -1)	return false;
 
-	// Añadir remove
+	listRemove(l, i);
 
 	return true;
 }
@@ -181,10 +204,6 @@ void* listGet(List* l, int index) {
 	return n->data;
 }
 
-int listSearch(List* l, void* data, bool (*cmpFunc)(void*, void*));
-
-// Modificar
-void listModifyElement(List* l, int index, void* dato, size_t size);
 
 // Utilidad
 void listPrint(List* l, void (*printFunc)(void*)) {
